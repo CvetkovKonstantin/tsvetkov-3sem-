@@ -16,4 +16,4 @@ namespace miit::algebra {
 
     inline Generator::~Generator() {}
 
-} // namespace miit::algebra
+}
