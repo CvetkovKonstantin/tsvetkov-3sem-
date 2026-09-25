@@ -1,66 +1,38 @@
 #include "Task2.h"
-#include <cmath>
 #include <vector>
 
 namespace miit::algebra {
 
     void Task2::solve() {
-        if (matrix.isEmpty()) {
+        const size_t rows = matrix.getRows();
+        const size_t cols = matrix.getCols();
+
+        if (rows == 0 || cols == 0) {
             return;
         }
 
-        const size_t rows = matrix.getRows();
-        const size_t cols = matrix.getCols();
+        // Отбираем индексы столбцов, которые нужно оставить:
+        // первый элемент столбца не больше последнего.
+        std::vector<size_t> columnsToKeep;
+        for (size_t j = 0; j < cols; ++j) {
+            if (matrix[0][j] <= matrix[rows - 1][j]) {
+                columnsToKeep.push_back(j);
+            }
+        }
 
-        const int maxAbs = findMaxAbs();
-        const std::vector<int> lastRow = matrix[rows - 1];
-
-        std::vector<std::vector<int>> newData;
-        newData.reserve(rows * 2);
-
+        // Собираем новую матрицу из отобранных столбцов.
+        Matrix<int> result(rows, columnsToKeep.size());
         for (size_t i = 0; i < rows; ++i) {
-            newData.push_back(matrix[i]);
-            if (rowContainsValue(i, maxAbs)) {
-                newData.push_back(lastRow);
+            for (size_t k = 0; k < columnsToKeep.size(); ++k) {
+                result[i][k] = matrix[i][columnsToKeep[k]];
             }
         }
 
-        matrix.resize(newData.size(), cols);
-        for (size_t i = 0; i < newData.size(); ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                matrix[i][j] = newData[i][j];
-            }
-        }
+        matrix = result;
     }
 
     std::string Task2::getDescription() const {
-        return "Insert the last row after each row containing the maximum absolute value element";
+        return "Remove all columns where the first element is greater than the last element";
     }
 
-    int Task2::findMaxAbs() const {
-        const size_t rows = matrix.getRows();
-        const size_t cols = matrix.getCols();
-
-        int maxAbs = std::abs(matrix[0][0]);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                const int cur = std::abs(matrix[i][j]);
-                if (cur > maxAbs) {
-                    maxAbs = cur;
-                }
-            }
-        }
-        return maxAbs;
-    }
-
-    bool Task2::rowContainsValue(const size_t row, const int value) const {
-        const size_t cols = matrix.getCols();
-        for (size_t j = 0; j < cols; ++j) {
-            if (std::abs(matrix[row][j]) == value) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-}
+} // namespace miit::algebra
