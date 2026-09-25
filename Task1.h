@@ -17,8 +17,11 @@ namespace miit::algebra {
         std::string getDescription() const override;
 
     private:
+        /** @brief Найти индекс строки с минимальным по модулю элементом */
         size_t findMinAbsInColumn(const size_t col) const;
+
+        /** @brief Проверить, что матрица не пустая */
         void checkMatrixNotEmpty() const;
     };
 
-}
+} // namespace miit::algebra
