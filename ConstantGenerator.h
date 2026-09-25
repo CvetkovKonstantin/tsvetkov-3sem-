@@ -15,9 +15,8 @@ namespace miit::algebra {
         ConstantGenerator(const int value = 0);
 
         int generate() override;
-
         void setValue(const int value);
         int getValue() const;
     };
 
-}
+} 
