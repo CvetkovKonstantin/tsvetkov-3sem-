@@ -19,4 +19,4 @@ namespace miit::algebra {
         return generator.get();
     }
 
-} 
+} // namespace miit::algebra
