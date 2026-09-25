@@ -23,7 +23,7 @@ namespace miit::algebra {
 
         const size_t rows = matrix.getRows();
         if (col >= matrix.getCols()) {
-            throw std::out_of_range("Task1: column index out of range");
+            throw std::out_of_range("Column index out of range");
         }
 
         size_t minRow = 0;
@@ -41,8 +41,8 @@ namespace miit::algebra {
 
     void Task1::checkMatrixNotEmpty() const {
         if (matrix.isEmpty()) {
-            throw std::runtime_error("Task1: matrix is empty");
+            throw std::runtime_error("Matrix is empty. Cannot perform operation.");
         }
     }
 
-} 
+} // namespace miit::algebra
