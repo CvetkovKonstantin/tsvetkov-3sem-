@@ -11,4 +11,4 @@ namespace miit::algebra {
         return this->distribution(this->generator);
     }
 
-} 
+} // namespace miit::algebra
