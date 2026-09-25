@@ -1,36 +1,30 @@
 #include "Task2.h"
 #include <cmath>
-#include <stdexcept>
 #include <vector>
 
 namespace miit::algebra {
 
     void Task2::solve() {
+        if (matrix.isEmpty()) {
+            return;
+        }
+
         const size_t rows = matrix.getRows();
         const size_t cols = matrix.getCols();
 
-        if (rows == 0 || cols == 0) {
-            return; // нечего обрабатывать
-        }
-
-        // 1. Находим максимальный по модулю элемент во всей матрице
-        const int maxAbsValue = findMaxAbs();
-
-        // 2. Запоминаем последнюю строку (её будем вставлять)
+        const int maxAbs = findMaxAbs();
         const std::vector<int> lastRow = matrix[rows - 1];
 
-        // 3. Строим новую матрицу, вставляя lastRow после нужных строк
         std::vector<std::vector<int>> newData;
         newData.reserve(rows * 2);
 
         for (size_t i = 0; i < rows; ++i) {
-            newData.push_back(matrix[i]);              // исходная строка
-            if (rowContainsValue(i, maxAbsValue)) {
-                newData.push_back(lastRow);            // вставка после неё
+            newData.push_back(matrix[i]);
+            if (rowContainsValue(i, maxAbs)) {
+                newData.push_back(lastRow);
             }
         }
 
-        // 4. Переносим данные обратно в matrix
         matrix.resize(newData.size(), cols);
         for (size_t i = 0; i < newData.size(); ++i) {
             for (size_t j = 0; j < cols; ++j) {
@@ -50,9 +44,9 @@ namespace miit::algebra {
         int maxAbs = std::abs(matrix[0][0]);
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                const int curAbs = std::abs(matrix[i][j]);
-                if (curAbs > maxAbs) {
-                    maxAbs = curAbs;
+                const int cur = std::abs(matrix[i][j]);
+                if (cur > maxAbs) {
+                    maxAbs = cur;
                 }
             }
         }
@@ -69,4 +63,4 @@ namespace miit::algebra {
         return false;
     }
 
-} 
+}
