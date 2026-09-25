@@ -3,7 +3,8 @@
 namespace miit::algebra {
 
     IStreamGenerator::IStreamGenerator(std::istream& in)
-        : in{ in } {}
+        : in{ in } {
+    }
 
     int IStreamGenerator::generate() {
         int value = 0;
@@ -11,4 +12,4 @@ namespace miit::algebra {
         return value;
     }
 
-} 
+} // namespace miit::algebra
