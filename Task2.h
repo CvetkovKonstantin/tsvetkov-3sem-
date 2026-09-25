@@ -6,8 +6,8 @@
 namespace miit::algebra {
 
     /**
-     * @brief Задание 2: вставить после каждой строки, содержащей
-     *        максимальный по модулю элемент, последнюю строку.
+     * @brief Задание 2: удалить все столбцы, в которых первый элемент
+     *        больше последнего.
      */
     class Task2 : public Exercise {
     public:
@@ -15,10 +15,6 @@ namespace miit::algebra {
 
         void solve() override;
         std::string getDescription() const override;
-
-    private:
-        int findMaxAbs() const;
-        bool rowContainsValue(const size_t row, const int value) const;
     };
 
-} 
+} // namespace miit::algebra
