@@ -1,4 +1,6 @@
 #include "Matrix.h"
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <stdexcept>
 
@@ -25,7 +27,7 @@ namespace miit::algebra {
     template <typename T>
     std::vector<T>& Matrix<T>::operator[](const size_t index) {
         if (index >= rows) {
-            throw std::out_of_range("Row index out of range");
+            throw std::out_of_range("Matrix: row index out of range");
         }
         return data[index];
     }
@@ -33,7 +35,7 @@ namespace miit::algebra {
     template <typename T>
     const std::vector<T>& Matrix<T>::operator[](const size_t index) const {
         if (index >= rows) {
-            throw std::out_of_range("Row index out of range");
+            throw std::out_of_range("Matrix: row index out of range");
         }
         return data[index];
     }
@@ -77,6 +79,22 @@ namespace miit::algebra {
         return std::make_unique<Matrix<T>>(*this);
     }
 
+    template <typename T>
+    std::ostream& operator<<(std::ostream& os, const Matrix<T>& m) {
+        os << m.toString();
+        return os;
+    }
+
+    template <typename T>
+    std::istream& operator>>(std::istream& is, Matrix<T>& m) {
+        for (size_t i = 0; i < m.getRows(); ++i) {
+            for (size_t j = 0; j < m.getCols(); ++j) {
+                is >> m[i][j];
+            }
+        }
+        return is;
+    }
+
     template class Matrix<int>;
 
-}
+} // namespace miit::algebra
