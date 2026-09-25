@@ -18,4 +18,4 @@ namespace miit::algebra {
         int generate() override;
     };
 
-} // namespace miit::algebra
+} 
