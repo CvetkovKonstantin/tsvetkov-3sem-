@@ -97,4 +97,4 @@ namespace miit::algebra {
 
     template class Matrix<int>;
 
-} // namespace miit::algebra
+} 
