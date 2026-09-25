@@ -73,86 +73,86 @@ namespace mtest {
         return failedCount() == 0 ? 0 : 1;
     }
 
-} // namespace mtest
+} 
 
-#define TEST(suite, name)                                              \
-    static void suite##_##name##_impl();                               \
-    static ::mtest::Registrar suite##_##name##_reg(                    \
-        #suite, #name, suite##_##name##_impl);                         \
+#define TEST(suite, name)                                              
+    static void suite##_##name##_impl();                               
+    static ::mtest::Registrar suite##_##name##_reg(                    
+        #suite, #name, suite##_##name##_impl);                         
     static void suite##_##name##_impl()
 
-#define EXPECT_TRUE(x)                                                 \
-    do {                                                               \
-        if (!(x))                                                      \
-            throw std::runtime_error("EXPECT_TRUE failed: " #x);       \
+#define EXPECT_TRUE(x)                                                 
+    do {                                                               
+        if (!(x))                                                      
+            throw std::runtime_error("EXPECT_TRUE failed: " #x);       
     } while (0)
 
-#define EXPECT_FALSE(x)                                                \
-    do {                                                               \
-        if ((x))                                                       \
-            throw std::runtime_error("EXPECT_FALSE failed: " #x);      \
+#define EXPECT_FALSE(x)                                                
+    do {                                                               
+        if ((x))                                                       
+            throw std::runtime_error("EXPECT_FALSE failed: " #x);      
     } while (0)
 
-#define EXPECT_EQ(a, b)                                                \
-    do {                                                               \
-        auto _a = (a); auto _b = (b);                                  \
-        if (!(_a == _b)) {                                             \
-            std::ostringstream _oss;                                   \
-            _oss << "EXPECT_EQ failed: " #a " == " #b                  \
-                 << " (left=" << _a << ", right=" << _b << ")";        \
-            throw std::runtime_error(_oss.str());                      \
-        }                                                              \
+#define EXPECT_EQ(a, b)                                                
+    do {                                                               
+        auto _a = (a); auto _b = (b);                                  
+        if (!(_a == _b)) {                                             
+            std::ostringstream _oss;                                   
+            _oss << "EXPECT_EQ failed: " #a " == " #b                  
+                 << " (left=" << _a << ", right=" << _b << ")";        
+            throw std::runtime_error(_oss.str());                      
+        }                                                              
     } while (0)
 
-#define EXPECT_NE(a, b)                                                \
-    do {                                                               \
-        if (!((a) != (b)))                                             \
-            throw std::runtime_error("EXPECT_NE failed: " #a " != " #b); \
+#define EXPECT_NE(a, b)                                                
+    do {                                                               
+        if (!((a) != (b)))                                             
+            throw std::runtime_error("EXPECT_NE failed: " #a " != " #b); 
     } while (0)
 
-#define EXPECT_GE(a, b)                                                \
-    do {                                                               \
-        auto _a = (a); auto _b = (b);                                  \
-        if (!(_a >= _b)) {                                             \
-            std::ostringstream _oss;                                   \
-            _oss << "EXPECT_GE failed: " #a " >= " #b                  \
-                 << " (left=" << _a << ", right=" << _b << ")";        \
-            throw std::runtime_error(_oss.str());                      \
-        }                                                              \
+#define EXPECT_GE(a, b)                                               
+    do {                                                               
+        auto _a = (a); auto _b = (b);                                  
+        if (!(_a >= _b)) {                                             
+            std::ostringstream _oss;                                   
+            _oss << "EXPECT_GE failed: " #a " >= " #b                  
+                 << " (left=" << _a << ", right=" << _b << ")";        
+            throw std::runtime_error(_oss.str());                      
+        }                                                              
     } while (0)
 
-#define EXPECT_LE(a, b)                                                \
-    do {                                                               \
-        auto _a = (a); auto _b = (b);                                  \
-        if (!(_a <= _b)) {                                             \
-            std::ostringstream _oss;                                   \
-            _oss << "EXPECT_LE failed: " #a " <= " #b                  \
-                 << " (left=" << _a << ", right=" << _b << ")";        \
-            throw std::runtime_error(_oss.str());                      \
-        }                                                              \
+#define EXPECT_LE(a, b)                                                
+    do {                                                               
+        auto _a = (a); auto _b = (b);                                  
+        if (!(_a <= _b)) {                                            
+            std::ostringstream _oss;                                   
+            _oss << "EXPECT_LE failed: " #a " <= " #b                  
+                 << " (left=" << _a << ", right=" << _b << ")";        
+            throw std::runtime_error(_oss.str());                      
+        }                                                              
     } while (0)
 
-#define EXPECT_THROW(stmt, ex)                                         \
-    do {                                                               \
-        bool _thrown = false;                                          \
-        try { stmt; }                                                  \
-        catch (const ex&) { _thrown = true; }                          \
-        catch (...) {}                                                 \
-        if (!_thrown)                                                  \
-            throw std::runtime_error("EXPECT_THROW failed: " #stmt     \
-                                     " did not throw " #ex);           \
+#define EXPECT_THROW(stmt, ex)                                         
+    do {                                                               
+        bool _thrown = false;                                          
+        try { stmt; }                                                  
+        catch (const ex&) { _thrown = true; }                          
+        catch (...) {}                                                 
+        if (!_thrown)                                                  
+            throw std::runtime_error("EXPECT_THROW failed: " #stmt     
+                                     " did not throw " #ex);          
     } while (0)
 
-#define EXPECT_NO_THROW(stmt)                                          \
-    do {                                                               \
-        try { stmt; }                                                  \
-        catch (const std::exception& e) {                              \
-            throw std::runtime_error(                                  \
-                std::string("EXPECT_NO_THROW failed: ") + e.what());   \
-        }                                                              \
-        catch (...) {                                                  \
-            throw std::runtime_error("EXPECT_NO_THROW failed: " #stmt);\
-        }                                                              \
+#define EXPECT_NO_THROW(stmt)                                          
+    do {                                                               
+        try { stmt; }                                                  
+        catch (const std::exception& e) {                              
+            throw std::runtime_error(                                  
+                std::string("EXPECT_NO_THROW failed: ") + e.what());   
+        }                                                              
+        catch (...) {                                                  
+            throw std::runtime_error("EXPECT_NO_THROW failed: " #stmt);
+        }                                                              
     } while (0)
 
 TEST(MatrixConstructor, Default) {
@@ -183,7 +183,6 @@ TEST(MatrixConstructor, Copy) {
     EXPECT_EQ(copy[0][0], 1);
     EXPECT_EQ(copy[1][1], 4);
 
-    // Копия независима от источника
     copy[0][0] = 99;
     EXPECT_EQ(src[0][0], 1);
 }
@@ -623,9 +622,7 @@ TEST(Integration, GeneratorFillsMatrix) {
     EXPECT_EQ(m[2][2], 7);
 }
 
-// ============================================================
 // Точка входа
-// ============================================================
 
 int main() {
     std::cout << "============================================\n";
