@@ -14,8 +14,15 @@ namespace miit::algebra {
         std::mt19937 generator;
 
     public:
+        /**
+         * @brief Конструктор
+         * @param min нижняя граница диапазона
+         * @param max верхняя граница диапазона
+         */
         RandomGenerator(const int min, const int max);
+
+        /** @brief Сгенерировать очередное значение */
         int generate() override;
     };
 
-} 
+} // namespace miit::algebra
