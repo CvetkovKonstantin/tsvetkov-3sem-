@@ -51,4 +51,4 @@ namespace miit::algebra {
     template <typename T>
     std::istream& operator>>(std::istream& is, Matrix<T>& m);
 
-} // namespace miit::algebra
+} 
