@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include <iostream>
-#include <limits>
 #include <string>
 
 #include "ConstantGenerator.h"
@@ -12,7 +11,7 @@
 
 using namespace miit::algebra;
 
-constexpr int CONSTANT_VALUE = 7;
+constexpr int PRESET_CONSTANT_VALUE = 7;
 
 enum class FillMethod {
     Random   = 1,
@@ -20,47 +19,47 @@ enum class FillMethod {
     Constant = 3
 };
 
-size_t readSize(const std::string& message);
-FillMethod readChoice();
+size_t getSize(const std::string& message);
+FillMethod getChoice();
 void fillMatrix(Matrix<int>& matrix, Generator& generator);
-void runExercise(Exercise& exercise,
-                 const Matrix<int>& original,
-                 const std::string& title);
+void demonstrateExercise(Exercise& exercise,
+                         const Matrix<int>& original,
+                         const std::string& taskName);
 
 int main() {
     try {
-        const size_t rows = readSize("Enter number of rows: ");
-        const size_t cols = readSize("Enter number of columns: ");
+        const size_t rows = getSize("Enter number of rows: ");
+        const size_t cols = getSize("Enter number of columns: ");
 
         Matrix<int> matrix(rows, cols);
-        const FillMethod choice = readChoice();
+        const FillMethod choice = getChoice();
 
         switch (choice) {
         case FillMethod::Random: {
-            int min = 0;
-            int max = 0;
             std::cout << "Enter minimum value: ";
+            int min = 0;
             std::cin >> min;
             std::cout << "Enter maximum value: ";
+            int max = 0;
             std::cin >> max;
             if (min > max) {
-                std::cerr << "Error: minimum greater than maximum\n";
+                std::cerr << "Error: minimum value is greater than maximum\n";
                 return 1;
             }
-            RandomGenerator gen(min, max);
-            fillMatrix(matrix, gen);
+            RandomGenerator generator(min, max);
+            fillMatrix(matrix, generator);
             break;
         }
         case FillMethod::Manual: {
-            std::cout << "Enter matrix elements (" << rows * cols << " values):\n";
-            IStreamGenerator gen(std::cin);
-            fillMatrix(matrix, gen);
+            std::cout << "Enter matrix elements (separated by spaces):\n";
+            IStreamGenerator generator(std::cin);
+            fillMatrix(matrix, generator);
             break;
         }
         case FillMethod::Constant: {
-            std::cout << "Using constant value: " << CONSTANT_VALUE << "\n";
-            ConstantGenerator gen(CONSTANT_VALUE);
-            fillMatrix(matrix, gen);
+            std::cout << "Using constant value: " << PRESET_CONSTANT_VALUE << "\n";
+            ConstantGenerator generator(PRESET_CONSTANT_VALUE);
+            fillMatrix(matrix, generator);
             break;
         }
         default:
@@ -68,26 +67,27 @@ int main() {
             return 1;
         }
 
-        std::cout << "\nCreated matrix:\n" << matrix.toString() << "\n";
+        std::cout << "\nCreated matrix:\n";
+        std::cout << matrix.toString() << "\n";
 
         Task1 task1;
-        runExercise(task1, matrix, "Task 1");
+        demonstrateExercise(task1, matrix, "Task 1");
 
         Task2 task2;
-        runExercise(task2, matrix, "Task 2");
+        demonstrateExercise(task2, matrix, "Task 2");
     }
     catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
 
     std::cout << "\nPress Enter to exit...";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.get();
     std::cin.get();
     return 0;
 }
 
-size_t readSize(const std::string& message) {
+size_t getSize(const std::string& message) {
     std::cout << message;
     int value = 0;
     std::cin >> value;
@@ -98,8 +98,8 @@ size_t readSize(const std::string& message) {
     return static_cast<size_t>(value);
 }
 
-FillMethod readChoice() {
-    std::cout << "Select matrix filling method:\n"
+FillMethod getChoice() {
+    std::cout << "Select array filling method:\n"
               << static_cast<int>(FillMethod::Random)   << " - random numbers\n"
               << static_cast<int>(FillMethod::Manual)   << " - manual input\n"
               << static_cast<int>(FillMethod::Constant) << " - constant value\n"
@@ -117,15 +117,18 @@ void fillMatrix(Matrix<int>& matrix, Generator& generator) {
     }
 }
 
-void runExercise(Exercise& exercise,
-                 const Matrix<int>& original,
-                 const std::string& title) {
-    std::cout << "\n=== " << title << " ===\n";
+void demonstrateExercise(Exercise& exercise,
+                         const Matrix<int>& original,
+                         const std::string& taskName) {
+    std::cout << "\n=== " << taskName << " ===\n";
     std::cout << "Description: " << exercise.getDescription() << "\n\n";
-    std::cout << "Original matrix:\n" << original.toString() << "\n";
+
+    std::cout << "Original matrix:\n";
+    std::cout << original.toString() << "\n";
 
     exercise.setMatrix(original);
     exercise.solve();
 
-    std::cout << "Result:\n" << exercise.getMatrix().toString() << "\n";
+    std::cout << "Result:\n";
+    std::cout << exercise.getMatrix().toString() << "\n";
 }
