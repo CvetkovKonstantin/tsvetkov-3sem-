@@ -307,4 +307,254 @@ TEST(MatrixTest, InsertRowAtBeginning)
 
 TEST(MatrixTest, InsertRowWrongSizeThrows)
 {
-    Matrix<int
+    Matrix<int> m(2, 3);
+    std::vector<int> row = { 1, 2 };
+    EXPECT_THROW(m.insertRow(0, row), std::invalid_argument);
+}
+
+TEST(MatrixTest, RemoveRow)
+{
+    std::istringstream input("1 2 3 4 5 6");
+    IStreamGenerator gen(input);
+    Matrix<int> m(2, 3, gen);
+
+    m.removeRow(0);
+    EXPECT_EQ(m.getRows(), 1u);
+    EXPECT_EQ(m[0][0], 4);
+    EXPECT_EQ(m[0][2], 6);
+}
+
+TEST(MatrixTest, RemoveRowOutOfRangeThrows)
+{
+    Matrix<int> m(2, 2);
+    EXPECT_THROW(m.removeRow(5), std::out_of_range);
+}
+
+// ============================================================
+// Тесты класса Matrix — insertCol / removeCol
+// ============================================================
+
+TEST(MatrixTest, RemoveCol)
+{
+    std::istringstream input("1 2 3 4 5 6");
+    IStreamGenerator gen(input);
+    Matrix<int> m(2, 3, gen);
+
+    m.removeCol(1);
+    EXPECT_EQ(m.getCols(), 2u);
+    EXPECT_EQ(m[0][0], 1);
+    EXPECT_EQ(m[0][1], 3);
+    EXPECT_EQ(m[1][1], 6);
+}
+
+TEST(MatrixTest, RemoveColOutOfRangeThrows)
+{
+    Matrix<int> m(2, 2);
+    EXPECT_THROW(m.removeCol(5), std::out_of_range);
+}
+
+TEST(MatrixTest, InsertCol)
+{
+    Matrix<int> m(2, 2);
+    std::vector<int> col = { 5, 6 };
+    m.insertCol(1, col);
+
+    EXPECT_EQ(m.getCols(), 3u);
+    EXPECT_EQ(m[0][1], 5);
+    EXPECT_EQ(m[1][1], 6);
+}
+
+TEST(MatrixTest, InsertColWrongSizeThrows)
+{
+    Matrix<int> m(2, 2);
+    std::vector<int> col = { 1, 2, 3 };
+    EXPECT_THROW(m.insertCol(0, col), std::invalid_argument);
+}
+
+// ============================================================
+// Тесты Задания 1 (вариант 9): минимальный по модулю в столбце -> 0
+// ============================================================
+
+TEST(Task1Test, BasicExample)
+{
+    // 5 -2  3
+    // 1  8 -4
+    // 7 -1  6
+    std::istringstream input("5 -2 3 1 8 -4 7 -1 6");
+    IStreamGenerator gen(input);
+    Matrix<int> m(3, 3, gen);
+
+    Task1 task(m);
+    task.solve();
+
+    EXPECT_EQ(m[1][0], 0);  // |1| — минимум в столбце 0
+    EXPECT_EQ(m[2][1], 0);  // |-1| — минимум в столбце 1
+    EXPECT_EQ(m[0][2], 0);  // |3| — минимум в столбце 2
+
+    EXPECT_EQ(m[0][0], 5);
+    EXPECT_EQ(m[1][1], 8);
+    EXPECT_EQ(m[2][2], 6);
+}
+
+TEST(Task1Test, AllPositive)
+{
+    // 3 7 2
+    // 5 1 8
+    std::istringstream input("3 7 2 5 1 8");
+    IStreamGenerator gen(input);
+    Matrix<int> m(2, 3, gen);
+
+    Task1 task(m);
+    task.solve();
+
+    EXPECT_EQ(m[0][0], 0);  // минимум в столбце 0 = 3
+    EXPECT_EQ(m[1][1], 0);  // минимум в столбце 1 = 1
+    EXPECT_EQ(m[0][2], 0);  // минимум в столбце 2 = 2
+}
+
+TEST(Task1Test, AllNegative)
+{
+    // -3 -7 -2
+    // -5 -1 -8
+    std::istringstream input("-3 -7 -2 -5 -1 -8");
+    IStreamGenerator gen(input);
+    Matrix<int> m(2, 3, gen);
+
+    Task1 task(m);
+    task.solve();
+
+    EXPECT_EQ(m[0][0], 0);  // |-3|
+    EXPECT_EQ(m[1][1], 0);  // |-1|
+    EXPECT_EQ(m[0][2], 0);  // |-2|
+}
+
+TEST(Task1Test, SingleRow)
+{
+    // 3 -7 2 -5
+    std::istringstream input("3 -7 2 -5");
+    IStreamGenerator gen(input);
+    Matrix<int> m(1, 4, gen);
+
+    Task1 task(m);
+    task.solve();
+
+    EXPECT_EQ(m[0][0], 0);
+    EXPECT_EQ(m[0][1], 0);
+    EXPECT_EQ(m[0][2], 0);
+    EXPECT_EQ(m[0][3], 0);
+}
+
+TEST(Task1Test, SingleColumn)
+{
+    // 3
+    // -7
+    // 2
+    // -5
+    std::istringstream input("3 -7 2 -5");
+    IStreamGenerator gen(input);
+    Matrix<int> m(4, 1, gen);
+
+    Task1 task(m);
+    task.solve();
+
+    // Минимальный по модулю — 2 (строка 2)
+    EXPECT_EQ(m[2][0], 0);
+    EXPECT_EQ(m[0][0], 3);
+    EXPECT_EQ(m[1][0], -7);
+    EXPECT_EQ(m[3][0], -5);
+}
+
+TEST(Task1Test, EmptyMatrixNoThrow)
+{
+    Matrix<int> m;
+    Task1 task(m);
+    EXPECT_NO_THROW(task.solve());
+}
+
+// ============================================================
+// Тесты Задания 2 (вариант 9)
+// ============================================================
+
+TEST(Task2Test, BasicExample)
+{
+    // 1 2
+    // 9 3   <- содержит максимум по модулю (|9|)
+    // 4 5   <- последняя
+    std::istringstream input("1 2 9 3 4 5");
+    IStreamGenerator gen(input);
+    Matrix<int> m(3, 2, gen);
+
+    Task2 task(m);
+    task.solve();
+
+    EXPECT_EQ(m.getRows(), 4u);
+    EXPECT_EQ(m.getCols(), 2u);
+    EXPECT_EQ(m[2][0], 4);
+    EXPECT_EQ(m[3][0], 4);
+    EXPECT_EQ(m[3][1], 5);
+}
+
+TEST(Task2Test, OnlyLastRowHasMaxAbs)
+{
+    std::istringstream input("1 2 9 9");
+    IStreamGenerator gen(input);
+    Matrix<int> m(2, 2, gen);
+
+    Task2 task(m);
+    task.solve();
+
+    EXPECT_EQ(m.getRows(), 3u);
+    EXPECT_EQ(m[2][0], 9);
+    EXPECT_EQ(m[2][1], 9);
+}
+
+TEST(Task2Test, MultipleMaxAbsRows)
+{
+    //  9  1   <- содержит |9|
+    //  2  3
+    // -9  4   <- содержит |9|
+    //  5  6   <- последняя
+    std::istringstream input("9 1 2 3 -9 4 5 6");
+    IStreamGenerator gen(input);
+    Matrix<int> m(4, 2, gen);
+
+    Task2 task(m);
+    task.solve();
+
+    EXPECT_EQ(m.getRows(), 6u);
+    EXPECT_EQ(m[1][0], 5);
+    EXPECT_EQ(m[4][0], 5);
+    EXPECT_EQ(m[5][0], 5);
+}
+
+TEST(Task2Test, EmptyMatrixNoThrow)
+{
+    Matrix<int> m;
+    Task2 task(m);
+    EXPECT_NO_THROW(task.solve());
+}
+
+// ============================================================
+// Комбинированный тест
+// ============================================================
+
+TEST(CombinedTest, Task1ThenTask2)
+{
+    std::istringstream input("5 -2 3 1 8 -4 7 -1 6");
+    IStreamGenerator gen(input);
+    Matrix<int> m(3, 3, gen);
+
+    Task1 t1(m);
+    t1.solve();
+
+    EXPECT_EQ(m[1][0], 0);
+    EXPECT_EQ(m[2][1], 0);
+    EXPECT_EQ(m[0][2], 0);
+
+    Task2 t2(m);
+    t2.solve();
+
+    // После Task1 максимум по модулю = 8 (строка 1).
+    // Значит после строки 1 вставится последняя строка → 4 строки.
+    EXPECT_EQ(m.getRows(), 4u);
+}
