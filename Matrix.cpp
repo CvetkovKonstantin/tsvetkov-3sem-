@@ -74,7 +74,7 @@ namespace miit::algebra {
     template <typename T>
     std::size_t Matrix<T>::getRows() const noexcept
     {
-        return rows;
+        return data.size();
     }
 
     template <typename T>
@@ -86,7 +86,7 @@ namespace miit::algebra {
     template <typename T>
     bool Matrix<T>::isEmpty() const noexcept
     {
-        return rows == 0 || cols == 0;
+        return data.empty() || data[0].empty();
     }
 
     template <typename T>
@@ -118,33 +118,33 @@ namespace miit::algebra {
         if (row.size() != cols) {
             throw std::invalid_argument("Matrix: row size mismatch");
         }
-        if (index > rows) {
+        if (index > data.size()) {
             throw std::out_of_range("Matrix: row index out of range");
         }
         data.insert(data.begin() + static_cast<std::ptrdiff_t>(index), row);
-        ++rows;
+        rows = data.size();
     }
 
     template <typename T>
     void Matrix<T>::removeRow(const std::size_t index)
     {
-        if (index >= rows) {
+        if (index >= data.size()) {
             throw std::out_of_range("Matrix: row index out of range");
         }
         data.erase(data.begin() + static_cast<std::ptrdiff_t>(index));
-        --rows;
+        rows = data.size();
     }
 
     template <typename T>
     void Matrix<T>::insertCol(const std::size_t index, const std::vector<T>& col)
     {
-        if (col.size() != rows) {
+        if (col.size() != data.size()) {
             throw std::invalid_argument("Matrix: col size mismatch");
         }
         if (index > cols) {
             throw std::out_of_range("Matrix: col index out of range");
         }
-        for (std::size_t i = 0; i < rows; ++i) {
+        for (std::size_t i = 0; i < data.size(); ++i) {
             data[i].insert(data[i].begin() + static_cast<std::ptrdiff_t>(index),
                            col[i]);
         }
@@ -163,7 +163,6 @@ namespace miit::algebra {
         --cols;
     }
 
-    // Явное инстанцирование шаблона для типа int
     template class Matrix<int>;
 
 } // namespace miit::algebra
