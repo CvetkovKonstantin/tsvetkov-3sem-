@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Product.h"
 
 /**
@@ -17,7 +18,6 @@ public:
      */
     Furniture(const int id, const std::string& name, const std::string& category,
               const double price, const int quantity);
-              
     /**
      * @brief Создать готовую мебель с автоматическим ID
      * @param name Непустое название
@@ -27,7 +27,7 @@ public:
      */
     Furniture(const std::string& name, const std::string& category,
               const double price, const int quantity);
-    
+
     /**
      * @brief Получить информацию о товаре
      * @return Строка с описанием
