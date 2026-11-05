@@ -30,7 +30,7 @@ public:
     
     /**
      * @brief Получить информацию о товаре
-     * @return Строка с описанием (добавлен префикс "[Готовая]")
+     * @return Строка с описанием
      */
     std::string getInfo() const override;
 };
