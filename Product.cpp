@@ -1,4 +1,5 @@
 #include "Product.h"
+
 #include <algorithm>
 #include <stdexcept>
 
@@ -10,16 +11,25 @@ Product::Product(const int id, const std::string& name, const std::string& categ
     : id(id), name(name), category(category), price(price), quantity(quantity)
 {
     if (id <= 0 || name.empty() || category.empty() || price < 0 || quantity < 0)
+    {
         throw std::invalid_argument("Неверные данные товара");
+    }
     if (std::find(activeIds.begin(), activeIds.end(), id) != activeIds.end())
+    {
         throw std::invalid_argument("Товар с таким ID уже существует");
+    }
     activeIds.push_back(id);
-    if (id >= nextId) nextId = id + 1;
+    if (id >= nextId)
+    {
+        nextId = id + 1;
+    }
 }
 
 Product::Product(const std::string& name, const std::string& category,
                  const double price, const int quantity)
-    : Product(nextId, name, category, price, quantity) {}
+    : Product(nextId, name, category, price, quantity)
+{
+}
 
 Product::Product(const Product& other)
     : id(other.id), name(other.name), category(other.category),
@@ -30,15 +40,20 @@ Product::Product(const Product& other)
 
 Product& Product::operator=(const Product& other)
 {
-    if (this != &other) {
+    if (this != &other)
+    {
         name = other.name;
         category = other.category;
         price = other.price;
         quantity = other.quantity;
-        if (id != other.id) {
+        if (id != other.id)
+        {
             activeIds.push_back(other.id);
             const auto it = std::find(activeIds.begin(), activeIds.end(), id);
-            if (it != activeIds.end()) activeIds.erase(it);
+            if (it != activeIds.end())
+            {
+                activeIds.erase(it);
+            }
             id = other.id;
         }
     }
@@ -48,7 +63,10 @@ Product& Product::operator=(const Product& other)
 Product::~Product()
 {
     const auto it = std::find(activeIds.begin(), activeIds.end(), id);
-    if (it != activeIds.end()) activeIds.erase(it);
+    if (it != activeIds.end())
+    {
+        activeIds.erase(it);
+    }
 }
 
 int Product::getId() const { return id; }
@@ -64,15 +82,26 @@ std::string Product::getInfo() const
            std::to_string(quantity) + " шт.";
 }
 
+bool Product::isMadeToOrder() const { return false; }
+
 void Product::addQuantity(const int amount)
 {
-    if (amount <= 0) throw std::invalid_argument("Количество должно быть > 0");
+    if (amount <= 0)
+    {
+        throw std::invalid_argument("Количество должно быть > 0");
+    }
     quantity += amount;
 }
 
 void Product::removeQuantity(const int amount)
 {
-    if (amount <= 0) throw std::invalid_argument("Количество должно быть > 0");
-    if (amount > quantity) throw std::runtime_error("Недостаточно товара");
+    if (amount <= 0)
+    {
+        throw std::invalid_argument("Количество должно быть > 0");
+    }
+    if (amount > quantity)
+    {
+        throw std::runtime_error("Недостаточно товара");
+    }
     quantity -= amount;
 }
