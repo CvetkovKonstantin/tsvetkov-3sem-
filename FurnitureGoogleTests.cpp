@@ -39,7 +39,6 @@ TEST(ProductTests, QuantityManagement) {
 
 TEST(ProductTests, UniqueIds) {
     Furniture f1(100, "Шкаф", "Корпусная", 15000.0, 10);
-    // Попытка создать товар с существующим ID должна выбросить исключение
     EXPECT_THROW(Furniture(100, "Стол", "Корпусная", 5000.0, 5), std::invalid_argument);
 }
 
@@ -47,8 +46,8 @@ TEST(CustomOrderTests, PriceCalculation) {
     CustomOrder c(1, "Кухня", "Кухня", 50000.0, 20.0);
     EXPECT_DOUBLE_EQ(c.getBasePrice(), 50000.0);
     EXPECT_DOUBLE_EQ(c.getMarkupPercent(), 20.0);
-    EXPECT_DOUBLE_EQ(c.getPrice(), 60000.0); // 50000 + 20%
-    EXPECT_EQ(c.getQuantity(), 0);           // Всегда 0, так как делается на заказ
+    EXPECT_DOUBLE_EQ(c.getPrice(), 60000.0); 
+    EXPECT_EQ(c.getQuantity(), 0);           
 }
 
 TEST(CustomOrderTests, InvalidMarkupThrows) {
@@ -87,7 +86,6 @@ TEST(ClientTests, Polymorphism) {
     Store store(1, "Магазин", 5, "ул. Мира");
     WholesaleClient wholesale(2, "Оптовик", 10, "Анна");
     
-    // Использование как базового типа
     const Client& c1 = store;
     const Client& c2 = wholesale;
     
@@ -126,14 +124,12 @@ protected:
 
     void SetUp() override {
         shop = new FurnitureShop("Тестовый магазин");
-        
-        // Товары (ID: 100, 101)
+
         shop->addProduct(new Furniture(100, "Шкаф", "Корпусная", 10000.0, 10));
-        shop->addProduct(new CustomOrder(101, "Кухня", "Кухня", 50000.0, 20.0)); // Цена: 60000
-        
-        // Клиенты (ID: 1, 2)
-        shop->addStore(Store(1, "Магазин А", 10.0, "ул. Мира")); // Скидка 10%
-        shop->addWholesaleClient(WholesaleClient(2, "Опт", 0.0, "Анна")); // Без скидки
+        shop->addProduct(new CustomOrder(101, "Кухня", "Кухня", 50000.0, 20.0)); 
+
+        shop->addStore(Store(1, "Магазин А", 10.0, "ул. Мира")); 
+        shop->addWholesaleClient(WholesaleClient(2, "Опт", 0.0, "Анна")); 
     }
 
     void TearDown() override {
@@ -142,55 +138,46 @@ protected:
 };
 
 TEST_F(ShopTest, AddUniqueEntities) {
-    // Попытка добавить товар с дубликатом ID
     EXPECT_THROW(shop->addProduct(new Furniture(100, "Другой", "Кат", 100.0, 1)), std::invalid_argument);
     
-    // Попытка добавить магазин с дубликатом ID
     EXPECT_THROW(shop->addStore(Store(1, "Другой", 0, "Адрес")), std::invalid_argument);
-    
-    // Попытка занять ID магазина оптовиком
+
     EXPECT_THROW(shop->addWholesaleClient(WholesaleClient(1, "Опт2", 0, "Петр")), std::invalid_argument);
 }
 
 TEST_F(ShopTest, MakeStoreOrderWithDiscount) {
-    // Продаем 2 шкафа магазину (скидка 10%)
-    // 10000 * 2 = 20000. Скидка 10% -> 18000.
+
     shop->makeStoreOrder(1, 100, 2, "2026-10-20");
     
-    EXPECT_EQ(shop->getProduct(100).getQuantity(), 8); // Остаток уменьшился
+    EXPECT_EQ(shop->getProduct(100).getQuantity(), 8); 
     EXPECT_EQ(shop->getAllSales().size(), 1);
     EXPECT_DOUBLE_EQ(shop->getAllSales()[0].getTotal(), 18000.0);
 }
 
 TEST_F(ShopTest, MakeWholesaleSaleWithoutDiscount) {
-    // Продаем 1 кухню оптовику (скидка 0%)
-    // Цена кухни: 60000.
+
     shop->makeWholesaleSale(2, 101, 1, "2026-10-21");
     
-    // Кухня на заказ, у нее не списывается остаток
     EXPECT_EQ(shop->getProduct(101).getQuantity(), 0);
     EXPECT_EQ(shop->getAllSales().size(), 1);
     EXPECT_DOUBLE_EQ(shop->getAllSales()[0].getTotal(), 60000.0);
 }
 
 TEST_F(ShopTest, NotEnoughStockThrows) {
-    // Просим 20 шкафов, а есть только 10
+
     EXPECT_THROW(shop->makeStoreOrder(1, 100, 20, "2026-10-20"), std::runtime_error);
     
-    // Проверяем, что остаток не изменился
     EXPECT_EQ(shop->getProduct(100).getQuantity(), 10);
     EXPECT_TRUE(shop->getAllSales().empty());
 }
 
 TEST_F(ShopTest, Task1_GetAvailableProducts) {
-    // Изначально доступны оба товара (шкафов 10, кухня под заказ)
+
     auto available = shop->getAvailableProducts();
     EXPECT_EQ(available.size(), 2);
-    
-    // Продаем все шкафы
+  
     shop->makeStoreOrder(1, 100, 10, "2026-10-20");
     
-    // Теперь шкафов нет, но кухня все еще доступна (она делается на заказ)
     available = shop->getAvailableProducts();
     EXPECT_EQ(available.size(), 1);
     EXPECT_EQ(available[0]->getId(), 101);
@@ -199,13 +186,11 @@ TEST_F(ShopTest, Task1_GetAvailableProducts) {
 TEST_F(ShopTest, Task2_SoldQuantityForPeriod) {
     shop->makeStoreOrder(1, 100, 2, "2026-10-01");
     shop->makeStoreOrder(1, 100, 3, "2026-10-15");
-    shop->makeStoreOrder(1, 100, 1, "2026-11-01"); // Вне периода
+    shop->makeStoreOrder(1, 100, 1, "2026-11-01");
     
-    // Ищем за октябрь
     int qty = shop->getSoldQuantityForPeriod("Шкаф", "2026-10-01", "2026-10-31");
-    EXPECT_EQ(qty, 5); // 2 + 3
+    EXPECT_EQ(qty, 5); 
     
-    // Неверный период
     EXPECT_THROW(shop->getSoldQuantityForPeriod("Шкаф", "2026-11-01", "2026-10-01"), std::invalid_argument);
 }
 
@@ -215,14 +200,12 @@ TEST_F(ShopTest, Task3_GetOrdersForPeriod) {
     shop->makeStoreOrder(1, 100, 1, "2026-11-01");
     
     auto orders = shop->getOrdersForPeriod("2026-10-01", "2026-10-31");
-    EXPECT_EQ(orders.size(), 2); // Должны попасть только две продажи
+    EXPECT_EQ(orders.size(), 2);
 }
 
 TEST_F(ShopTest, Task4_CalculateCustomOrderPrice) {
-    // Базовая цена 50000, наценка 15% = 57500
     EXPECT_DOUBLE_EQ(shop->calculateCustomOrderPrice(50000, 15), 57500.0);
-    
-    // Базовая цена 10000, наценка 0% = 10000
+
     EXPECT_DOUBLE_EQ(shop->calculateCustomOrderPrice(10000, 0), 10000.0);
     
     EXPECT_THROW(shop->calculateCustomOrderPrice(-100, 10), std::invalid_argument);
@@ -234,7 +217,6 @@ TEST_F(ShopTest, InvalidDateThrows) {
     EXPECT_THROW(shop->makeStoreOrder(1, 100, 1, "20-10-2026"), std::invalid_argument);
 }
 
-// Проверка того, что магазин защищен от копирования (правило трёх)
 TEST_F(ShopTest, IsNotCopyable) {
     EXPECT_FALSE(std::is_copy_constructible<FurnitureShop>::value);
     EXPECT_FALSE(std::is_copy_assignable<FurnitureShop>::value);
