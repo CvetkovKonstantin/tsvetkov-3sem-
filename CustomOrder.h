@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Product.h"
 
 /**
@@ -11,7 +12,6 @@ private:
      * @brief Базовая цена до наценки
      */
     double basePrice;
-    
     /**
      * @brief Процент наценки
      */
@@ -29,7 +29,6 @@ public:
      */
     CustomOrder(const int id, const std::string& name, const std::string& category,
                 const double basePrice, const double markupPercent);
-                
     /**
      * @brief Создать индивидуальный заказ с автоматическим ID
      * @param name Непустое название
@@ -40,22 +39,25 @@ public:
      */
     CustomOrder(const std::string& name, const std::string& category,
                 const double basePrice, const double markupPercent);
-    
+
     /**
      * @brief Получить базовую цену до наценки
      * @return Базовая цена
      */
     double getBasePrice() const;
-    
     /**
      * @brief Получить процент наценки
      * @return Процент наценки
      */
     double getMarkupPercent() const;
-    
     /**
      * @brief Получить информацию о товаре
-     * @return Строка с описанием 
+     * @return Строка с описанием
      */
     std::string getInfo() const override;
+    /**
+     * @brief Проверить, изготавливается ли товар под заказ
+     * @return Всегда true
+     */
+    bool isMadeToOrder() const override;
 };
