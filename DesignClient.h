@@ -22,13 +22,21 @@ private:
 public:
     /**
      * @brief Создать клиента индивидуального проекта
-     * @param id Положительный идентификатор клиента
+     * @param id Положительный уникальный идентификатор клиента
      * @param name Непустое название клиента
      * @param address Непустой адрес доставки
      * @param markupPercent Неотрицательная надбавка в процентах
      */
     DesignClient(const int id, const std::string& name,
                  const std::string& address, const double markupPercent);
+    /**
+     * @brief Создать клиента индивидуального проекта с автоматическим идентификатором
+     * @param name Непустое название клиента
+     * @param address Непустой адрес доставки
+     * @param markupPercent Неотрицательная надбавка в процентах
+     */
+    DesignClient(const std::string& name, const std::string& address,
+                 const double markupPercent);
 
     /**
      * @brief Получить адрес доставки
