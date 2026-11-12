@@ -43,9 +43,9 @@ public:
                 const int quantity, const std::string& date,
                 const double total, const double markupPercent);
     /**
-     * @brief Уничтожить экземпляр заказа 
+     * @brief Уничтожить экземпляр заказа (используется деструктор базового класса)
      */
-    ~CustomOrder() = default;
+    ~CustomOrder() override = default;
 
     /**
      * @brief Получить надбавку за индивидуальный проект
