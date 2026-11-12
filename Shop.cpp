@@ -50,16 +50,22 @@ Shop::Shop(const std::string& name) : name(name)
 
 const std::string& Shop::getName() const { return name; }
 
-void Shop::addProduct(const Product& product)
+int Shop::addProduct(const Product& product)
 {
     for (const Product& existing : products)
     {
+        if (existing.getName() == product.getName() &&
+            existing.getManufacturer() == product.getManufacturer())
+        {
+            return existing.getId();
+        }
         if (existing.getId() == product.getId())
         {
             throw std::invalid_argument("Образец с таким ID уже есть");
         }
     }
     products.push_back(product);
+    return product.getId();
 }
 
 int Shop::addRetailClient(const RetailClient& client)
