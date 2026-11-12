@@ -19,7 +19,7 @@ private:
 public:
     /**
      * @brief Создать заказ по индивидуальному проекту
-     * @param id Положительный идентификатор заказа
+     * @param id Положительный уникальный идентификатор заказа
      * @param client Клиент, оформивший заказ
      * @param product Образец-основа заказа
      * @param quantity Положительное число изделий в заказе
@@ -30,6 +30,29 @@ public:
     CustomOrder(const int id, const Client& client, const Product& product,
                 const int quantity, const std::string& date,
                 const double total, const double markupPercent);
+    /**
+     * @brief Создать заказ по проекту с автоматическим идентификатором
+     * @param client Клиент, оформивший заказ
+     * @param product Образец-основа заказа
+     * @param quantity Положительное число изделий в заказе
+     * @param date Непустая строка даты заказа
+     * @param total Неотрицательная стоимость заказа
+     * @param markupPercent Неотрицательная надбавка в процентах
+     */
+    CustomOrder(const Client& client, const Product& product,
+                const int quantity, const std::string& date,
+                const double total, const double markupPercent);
+    /**
+     * @brief Скопировать заказ с сохранением идентификатора
+     * @param other Исходный заказ
+     */
+    CustomOrder(const CustomOrder& other);
+    /**
+     * @brief Присвоить данные заказа с сохранением идентификатора
+     * @param other Исходный заказ
+     * @return Ссылка на текущий заказ
+     */
+    CustomOrder& operator=(const CustomOrder& other);
     /**
      * @brief Уничтожить экземпляр заказа
      */
