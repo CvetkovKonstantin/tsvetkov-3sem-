@@ -1,6 +1,10 @@
 #include "Sale.h"
 
+#include <algorithm>
 #include <stdexcept>
+
+int Sale::nextId = 1;
+std::vector<int> Sale::activeIds;
 
 Sale::Sale(const int id, const Client& client, const Product& product,
            const int quantity, const std::string& date, const double total)
@@ -12,9 +16,61 @@ Sale::Sale(const int id, const Client& client, const Product& product,
     {
         throw std::invalid_argument("Неверные данные продажи");
     }
+    if (std::find(activeIds.begin(), activeIds.end(), id) != activeIds.end())
+    {
+        throw std::invalid_argument("Продажа с таким ID уже существует");
+    }
+    activeIds.push_back(id);
+    if (id >= nextId)
+    {
+        nextId = id + 1;
+    }
 }
 
-Sale::~Sale() = default;
+Sale::Sale(const Client& client, const Product& product, const int quantity,
+           const std::string& date, const double total)
+    : Sale(nextId, client, product, quantity, date, total)
+{
+}
+
+Sale::Sale(const Sale& other)
+    : id(other.id), client(other.client), product(other.product),
+      quantity(other.quantity), date(other.date), total(other.total)
+{
+    activeIds.push_back(id);
+}
+
+Sale& Sale::operator=(const Sale& other)
+{
+    if (this != &other)
+    {
+        client = other.client;
+        product = other.product;
+        quantity = other.quantity;
+        date = other.date;
+        total = other.total;
+        if (id != other.id)
+        {
+            activeIds.push_back(other.id);
+            const auto it = std::find(activeIds.begin(), activeIds.end(), id);
+            if (it != activeIds.end())
+            {
+                activeIds.erase(it);
+            }
+            id = other.id;
+        }
+    }
+    return *this;
+}
+
+Sale::~Sale()
+{
+    const auto it = std::find(activeIds.begin(), activeIds.end(), id);
+    if (it != activeIds.end())
+    {
+        activeIds.erase(it);
+    }
+}
 
 int Sale::getId() const { return id; }
 const Client& Sale::getClient() const { return client; }
