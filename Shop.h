@@ -39,14 +39,6 @@ private:
      * @brief История заказов по индивидуальному проекту
      */
     std::vector<CustomOrder> orders;
-    /**
-     * @brief Идентификатор следующей продажи
-     */
-    int nextSaleId = 1;
-    /**
-     * @brief Идентификатор следующего заказа
-     */
-    int nextOrderId = 1;
 
     /**
      * @brief Найти образец мебели для изменения его остатка
@@ -60,9 +52,9 @@ private:
      * @param productId Идентификатор образца
      * @param quantity Положительное число продаваемых изделий
      * @param date Дата продажи в формате ГГГГ-ММ-ДД
-     * @return Идентификатор добавленной продажи
+     * @return Запись добавленной продажи
      */
-    int addSale(const Client& client, const int productId,
+    Sale addSale(const Client& client, const int productId,
                 const int quantity, const std::string& date);
 
 public:
@@ -84,15 +76,17 @@ public:
      */
     void addProduct(const Product& product);
     /**
-     * @brief Зарегистрировать розничного покупателя
+     * @brief Зарегистрировать розничного покупателя или найти существующего
      * @param client Розничный покупатель
+     * @return Идентификатор зарегистрированного покупателя
      */
-    void addRetailClient(const RetailClient& client);
+    int addRetailClient(const RetailClient& client);
     /**
-     * @brief Зарегистрировать клиента индивидуального проекта
+     * @brief Зарегистрировать клиента проекта или найти существующего
      * @param client Клиент индивидуального проекта
+     * @return Идентификатор зарегистрированного клиента
      */
-    void addDesignClient(const DesignClient& client);
+    int addDesignClient(const DesignClient& client);
 
     /**
      * @brief Найти образец мебели по идентификатору
