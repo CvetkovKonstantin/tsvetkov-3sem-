@@ -21,7 +21,7 @@ private:
      */
     static int nextId;
     /**
-     * @brief Идентификаторы уже существующих записей
+     * @brief Идентификаторы уже сохранённых записей
      */
     static std::vector<int> activeIds;
     /**
@@ -68,20 +68,9 @@ public:
     Sale(const Client& client, const Product& product, const int quantity,
          const std::string& date, const double total);
     /**
-     * @brief Скопировать продажу с сохранением идентификатора
-     * @param other Исходная продажа
+     * @brief Уничтожить экземпляр продажи 
      */
-    Sale(const Sale& other);
-    /**
-     * @brief Присвоить данные продажи с сохранением идентификатора
-     * @param other Исходная продажа
-     * @return Ссылка на текущую продажу
-     */
-    Sale& operator=(const Sale& other);
-    /**
-     * @brief Уничтожить экземпляр продажи
-     */
-    virtual ~Sale();
+    virtual ~Sale() = default;
 
     /**
      * @brief Получить идентификатор продажи
