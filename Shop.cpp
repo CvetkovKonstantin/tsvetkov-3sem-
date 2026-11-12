@@ -62,10 +62,15 @@ void Shop::addProduct(const Product& product)
     products.push_back(product);
 }
 
-void Shop::addRetailClient(const RetailClient& client)
+int Shop::addRetailClient(const RetailClient& client)
 {
     for (const RetailClient& existing : retailClients)
     {
+        if (existing.getName() == client.getName() &&
+            existing.getPhone() == client.getPhone())
+        {
+            return existing.getId();
+        }
         if (existing.getId() == client.getId())
         {
             throw std::invalid_argument("Клиент с таким ID уже есть");
@@ -79,9 +84,10 @@ void Shop::addRetailClient(const RetailClient& client)
         }
     }
     retailClients.push_back(client);
+    return client.getId();
 }
 
-void Shop::addDesignClient(const DesignClient& client)
+int Shop::addDesignClient(const DesignClient& client)
 {
     for (const RetailClient& existing : retailClients)
     {
@@ -92,12 +98,18 @@ void Shop::addDesignClient(const DesignClient& client)
     }
     for (const DesignClient& existing : designClients)
     {
+        if (existing.getName() == client.getName() &&
+            existing.getAddress() == client.getAddress())
+        {
+            return existing.getId();
+        }
         if (existing.getId() == client.getId())
         {
             throw std::invalid_argument("Клиент с таким ID уже есть");
         }
     }
     designClients.push_back(client);
+    return client.getId();
 }
 
 Product& Shop::findProduct(const int productId)
@@ -157,7 +169,7 @@ void Shop::receiveProduct(const int productId, const int quantity)
     findProduct(productId).addQuantity(quantity);
 }
 
-int Shop::addSale(const Client& client, const int productId,
+Sale Shop::addSale(const Client& client, const int productId,
                   const int quantity, const std::string& date)
 {
     if (!isValidDate(date) || quantity <= 0)
@@ -172,18 +184,18 @@ int Shop::addSale(const Client& client, const int productId,
     }
 
     const double total = product.getPrice() * quantity;
-    const int saleId = nextSaleId;
-    sales.emplace_back(saleId, client, product, quantity, date, total);
+    const Sale sale(client, product, quantity, date, total);
     product.removeQuantity(quantity);
-    ++nextSaleId;
-    return saleId;
+    return sale;
 }
 
 int Shop::makeSale(const int clientId, const int productId,
                    const int quantity, const std::string& date)
 {
     const RetailClient& client = getRetailClient(clientId);
-    return addSale(client, productId, quantity, date);
+    const Sale sale = addSale(client, productId, quantity, date);
+    sales.push_back(sale);
+    return sale.getId();
 }
 
 double Shop::calculateOrderCost(const int productId, const int quantity,
@@ -209,10 +221,9 @@ double Shop::makeCustomOrder(const int clientId, const int productId,
 
     const double total = calculateOrderCost(productId, quantity,
                                             client.getMarkupPercent());
-    const int orderId = nextOrderId;
-    orders.emplace_back(orderId, client, getProduct(productId), quantity,
-                        date, total, client.getMarkupPercent());
-    ++nextOrderId;
+    const CustomOrder order(client, getProduct(productId), quantity, date,
+                            total, client.getMarkupPercent());
+    orders.push_back(order);
     return total;
 }
 
