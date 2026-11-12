@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 /**
@@ -71,5 +72,46 @@ int main()
     std::cout << "Клиент " << projectBuyer.getName() << ": "
               << shop.calculateOrderCost(1, 3, projectBuyer.getMarkupPercent())
               << " (надбавка " << projectBuyer.getMarkupPercent() << "%)\n";
+
+    std::cout << "\n6. Уникальность и автоматическое присвоение ID:\n";
+    try
+    {
+        const RetailClient duplicate(1, "Дубль", "+7 900 000-00-00");
+        shop.addRetailClient(duplicate);
+    }
+    catch (const std::invalid_argument& error)
+    {
+        std::cout << "Повтор ID 1 отклонён: " << error.what() << '\n';
+    }
+
+    const RetailClient newBuyer("Сидоров Пётр", "+7 900 777-88-99");
+    const DesignClient newProjectBuyer("ООО Шкафы", "ул. Садовая, 3", 25);
+    const int newBuyerId = shop.addRetailClient(newBuyer);
+    const int newProjectBuyerId = shop.addDesignClient(newProjectBuyer);
+
+    std::cout << "ID нового покупателя: " << newBuyerId << '\n';
+    std::cout << "ID нового клиента проекта: " << newProjectBuyerId << '\n';
+
+    const RetailClient sameBuyer("Сидоров Пётр", "+7 900 777-88-99");
+    std::cout << "Повторная регистрация покупателя, ID в системе: "
+              << shop.addRetailClient(sameBuyer) << '\n';
+
+    std::cout << "\n7. Уникальность ID образцов и продаж:\n";
+    const Product newProduct("Комод", "Фабрика Мебель", 9000, 4);
+    shop.addProduct(newProduct);
+    std::cout << "ID нового образца: " << newProduct.getId() << '\n';
+    try
+    {
+        shop.addProduct(Product(1, "Дубль", "Фабрика Мебель", 100, 1));
+    }
+    catch (const std::invalid_argument& error)
+    {
+        std::cout << "Повтор ID 1 отклонён: " << error.what() << '\n';
+    }
+
+    const int firstSaleId = shop.makeSale(1, 2, 1, "2026-10-25");
+    const int secondSaleId = shop.makeSale(1, 2, 1, "2026-10-26");
+    std::cout << "ID новых продаж: " << firstSaleId << " и "
+              << secondSaleId << '\n';
     return 0;
 }
