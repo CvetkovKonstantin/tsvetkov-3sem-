@@ -4,6 +4,7 @@
 #include "Product.h"
 
 #include <string>
+#include <vector>
 
 /**
  * @brief Запись о продаже готового изделия из ассортимента магазина
@@ -15,6 +16,14 @@ private:
      * @brief Уникальный идентификатор продажи
      */
     int id;
+    /**
+     * @brief Следующий свободный идентификатор продажи
+     */
+    static int nextId;
+    /**
+     * @brief Идентификаторы уже существующих записей
+     */
+    static std::vector<int> activeIds;
     /**
      * @brief Базовые данные клиента, совершившего покупку
      */
@@ -39,7 +48,7 @@ private:
 public:
     /**
      * @brief Создать запись о продаже
-     * @param id Положительный идентификатор продажи
+     * @param id Положительный уникальный идентификатор продажи
      * @param client Клиент, совершивший покупку
      * @param product Проданный образец мебели
      * @param quantity Положительное число проданных изделий
@@ -48,6 +57,27 @@ public:
      */
     Sale(const int id, const Client& client, const Product& product,
          const int quantity, const std::string& date, const double total);
+    /**
+     * @brief Создать запись о продаже с автоматическим идентификатором
+     * @param client Клиент, совершивший покупку
+     * @param product Проданный образец мебели
+     * @param quantity Положительное число проданных изделий
+     * @param date Непустая строка даты продажи
+     * @param total Неотрицательная сумма продажи
+     */
+    Sale(const Client& client, const Product& product, const int quantity,
+         const std::string& date, const double total);
+    /**
+     * @brief Скопировать продажу с сохранением идентификатора
+     * @param other Исходная продажа
+     */
+    Sale(const Sale& other);
+    /**
+     * @brief Присвоить данные продажи с сохранением идентификатора
+     * @param other Исходная продажа
+     * @return Ссылка на текущую продажу
+     */
+    Sale& operator=(const Sale& other);
     /**
      * @brief Уничтожить экземпляр продажи
      */
