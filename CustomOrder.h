@@ -43,20 +43,9 @@ public:
                 const int quantity, const std::string& date,
                 const double total, const double markupPercent);
     /**
-     * @brief Скопировать заказ с сохранением идентификатора
-     * @param other Исходный заказ
+     * @brief Уничтожить экземпляр заказа (используется деструктор базового класса)
      */
-    CustomOrder(const CustomOrder& other);
-    /**
-     * @brief Присвоить данные заказа с сохранением идентификатора
-     * @param other Исходный заказ
-     * @return Ссылка на текущий заказ
-     */
-    CustomOrder& operator=(const CustomOrder& other);
-    /**
-     * @brief Уничтожить экземпляр заказа
-     */
-    ~CustomOrder() override;
+    ~CustomOrder() override = default;
 
     /**
      * @brief Получить надбавку за индивидуальный проект
