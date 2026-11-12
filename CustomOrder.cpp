@@ -27,23 +27,6 @@ CustomOrder::CustomOrder(const Client& client, const Product& product,
     }
 }
 
-CustomOrder::CustomOrder(const CustomOrder& other)
-    : Sale(other), markupPercent(other.markupPercent)
-{
-}
-
-CustomOrder& CustomOrder::operator=(const CustomOrder& other)
-{
-    if (this != &other)
-    {
-        Sale::operator=(other);
-        markupPercent = other.markupPercent;
-    }
-    return *this;
-}
-
-CustomOrder::~CustomOrder() = default;
-
 double CustomOrder::getMarkupPercent() const { return markupPercent; }
 
 std::string CustomOrder::getInfo() const
