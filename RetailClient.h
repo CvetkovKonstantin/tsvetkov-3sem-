@@ -18,12 +18,18 @@ private:
 public:
     /**
      * @brief Создать розничного покупателя
-     * @param id Положительный идентификатор покупателя
+     * @param id Положительный уникальный идентификатор покупателя
      * @param name Непустое название покупателя
      * @param phone Непустой номер телефона
      */
     RetailClient(const int id, const std::string& name,
                  const std::string& phone);
+    /**
+     * @brief Создать розничного покупателя с автоматическим идентификатором
+     * @param name Непустое название покупателя
+     * @param phone Непустой номер телефона
+     */
+    RetailClient(const std::string& name, const std::string& phone);
 
     /**
      * @brief Получить номер телефона покупателя
