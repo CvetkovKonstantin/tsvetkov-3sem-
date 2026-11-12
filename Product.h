@@ -60,7 +60,7 @@ public:
     Product(const std::string& name, const std::string& manufacturer,
             const double price, const int quantity);
     /**
-     * @brief Уничтожить экземпляр образца (используется деструктор по умолчанию)
+     * @brief Уничтожить экземпляр образца
      */
     ~Product() = default;
 
