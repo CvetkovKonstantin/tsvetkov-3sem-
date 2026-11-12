@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 /**
  * @brief Образец мебели в ассортименте магазина
@@ -12,6 +13,14 @@ private:
      * @brief Уникальный идентификатор образца
      */
     int id;
+    /**
+     * @brief Следующий свободный идентификатор
+     */
+    static int nextId;
+    /**
+     * @brief Идентификаторы уже существующих образцов
+     */
+    static std::vector<int> activeIds;
     /**
      * @brief Наименование образца мебели
      */
@@ -32,7 +41,7 @@ private:
 public:
     /**
      * @brief Создать образец мебели
-     * @param id Положительный идентификатор образца
+     * @param id Положительный уникальный идентификатор образца
      * @param name Непустое наименование образца
      * @param manufacturer Непустое наименование фабрики
      * @param price Положительная цена изделия
@@ -41,6 +50,30 @@ public:
     Product(const int id, const std::string& name,
             const std::string& manufacturer, const double price,
             const int quantity);
+    /**
+     * @brief Создать образец мебели с автоматическим идентификатором
+     * @param name Непустое наименование образца
+     * @param manufacturer Непустое наименование фабрики
+     * @param price Положительная цена изделия
+     * @param quantity Неотрицательный остаток на складе магазина
+     */
+    Product(const std::string& name, const std::string& manufacturer,
+            const double price, const int quantity);
+    /**
+     * @brief Скопировать образец с сохранением идентификатора
+     * @param other Исходный образец
+     */
+    Product(const Product& other);
+    /**
+     * @brief Присвоить данные образца с сохранением идентификатора
+     * @param other Исходный образец
+     * @return Ссылка на текущий образец
+     */
+    Product& operator=(const Product& other);
+    /**
+     * @brief Уничтожить экземпляр образца
+     */
+    ~Product();
 
     /**
      * @brief Получить идентификатор образца
