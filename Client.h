@@ -18,7 +18,7 @@ private:
      */
     static int nextId;
     /**
-     * @brief Идентификаторы уже существующих клиентов
+     * @brief Идентификаторы уже зарегистрированных клиентов
      */
     static std::vector<int> activeIds;
     /**
@@ -39,20 +39,9 @@ public:
      */
     Client(const std::string& name);
     /**
-     * @brief Скопировать клиента с сохранением идентификатора
-     * @param other Исходный клиент
-     */
-    Client(const Client& other);
-    /**
-     * @brief Присвоить данные клиента с сохранением идентификатора
-     * @param other Исходный клиент
-     * @return Ссылка на текущего клиента
-     */
-    Client& operator=(const Client& other);
-    /**
      * @brief Уничтожить экземпляр клиента
      */
-    virtual ~Client();
+    virtual ~Client() = default;
 
     /**
      * @brief Получить идентификатор клиента
