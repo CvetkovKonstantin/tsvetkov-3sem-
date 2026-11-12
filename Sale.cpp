@@ -33,45 +33,6 @@ Sale::Sale(const Client& client, const Product& product, const int quantity,
 {
 }
 
-Sale::Sale(const Sale& other)
-    : id(other.id), client(other.client), product(other.product),
-      quantity(other.quantity), date(other.date), total(other.total)
-{
-    activeIds.push_back(id);
-}
-
-Sale& Sale::operator=(const Sale& other)
-{
-    if (this != &other)
-    {
-        client = other.client;
-        product = other.product;
-        quantity = other.quantity;
-        date = other.date;
-        total = other.total;
-        if (id != other.id)
-        {
-            activeIds.push_back(other.id);
-            const auto it = std::find(activeIds.begin(), activeIds.end(), id);
-            if (it != activeIds.end())
-            {
-                activeIds.erase(it);
-            }
-            id = other.id;
-        }
-    }
-    return *this;
-}
-
-Sale::~Sale()
-{
-    const auto it = std::find(activeIds.begin(), activeIds.end(), id);
-    if (it != activeIds.end())
-    {
-        activeIds.erase(it);
-    }
-}
-
 int Sale::getId() const { return id; }
 const Client& Sale::getClient() const { return client; }
 const Product& Sale::getProduct() const { return product; }
