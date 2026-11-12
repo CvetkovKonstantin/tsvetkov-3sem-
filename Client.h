@@ -39,7 +39,7 @@ public:
      */
     Client(const std::string& name);
     /**
-     * @brief Уничтожить экземпляр клиента
+     * @brief Уничтожить экземпляр клиента (используется деструктор по умолчанию)
      */
     virtual ~Client() = default;
 

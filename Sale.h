@@ -68,7 +68,7 @@ public:
     Sale(const Client& client, const Product& product, const int quantity,
          const std::string& date, const double total);
     /**
-     * @brief Уничтожить экземпляр продажи 
+     * @brief Уничтожить экземпляр продажи (используется деструктор по умолчанию)
      */
     virtual ~Sale() = default;
 
