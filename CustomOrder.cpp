@@ -15,6 +15,33 @@ CustomOrder::CustomOrder(const int id, const Client& client,
     }
 }
 
+CustomOrder::CustomOrder(const Client& client, const Product& product,
+                         const int quantity, const std::string& date,
+                         const double total, const double markupPercent)
+    : Sale(client, product, quantity, date, total),
+      markupPercent(markupPercent)
+{
+    if (markupPercent < 0)
+    {
+        throw std::invalid_argument("Надбавка не может быть отрицательной");
+    }
+}
+
+CustomOrder::CustomOrder(const CustomOrder& other)
+    : Sale(other), markupPercent(other.markupPercent)
+{
+}
+
+CustomOrder& CustomOrder::operator=(const CustomOrder& other)
+{
+    if (this != &other)
+    {
+        Sale::operator=(other);
+        markupPercent = other.markupPercent;
+    }
+    return *this;
+}
+
 CustomOrder::~CustomOrder() = default;
 
 double CustomOrder::getMarkupPercent() const { return markupPercent; }
