@@ -1,6 +1,10 @@
 #include "Product.h"
 
+#include <algorithm>
 #include <stdexcept>
+
+int Product::nextId = 1;
+std::vector<int> Product::activeIds;
 
 Product::Product(const int id, const std::string& name,
                  const std::string& manufacturer, const double price,
@@ -12,6 +16,59 @@ Product::Product(const int id, const std::string& name,
         price <= 0 || quantity < 0)
     {
         throw std::invalid_argument("Неверные данные образца мебели");
+    }
+    if (std::find(activeIds.begin(), activeIds.end(), id) != activeIds.end())
+    {
+        throw std::invalid_argument("Образец с таким ID уже существует");
+    }
+    activeIds.push_back(id);
+    if (id >= nextId)
+    {
+        nextId = id + 1;
+    }
+}
+
+Product::Product(const std::string& name, const std::string& manufacturer,
+                 const double price, const int quantity)
+    : Product(nextId, name, manufacturer, price, quantity)
+{
+}
+
+Product::Product(const Product& other)
+    : id(other.id), name(other.name), manufacturer(other.manufacturer),
+      price(other.price), quantity(other.quantity)
+{
+    activeIds.push_back(id);
+}
+
+Product& Product::operator=(const Product& other)
+{
+    if (this != &other)
+    {
+        name = other.name;
+        manufacturer = other.manufacturer;
+        price = other.price;
+        quantity = other.quantity;
+        if (id != other.id)
+        {
+            activeIds.push_back(other.id);
+            const auto it = std::find(activeIds.begin(), activeIds.end(), id);
+            if (it != activeIds.end())
+            {
+                activeIds.erase(it);
+            }
+            id = other.id;
+        }
+    }
+    return *this;
+}
+
+Product::~Product()
+{
+    const auto it = std::find(activeIds.begin(), activeIds.end(), id);
+    if (it != activeIds.end())
+    {
+        activeIds.erase(it);
     }
 }
 
