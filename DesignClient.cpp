@@ -13,6 +13,16 @@ DesignClient::DesignClient(const int id, const std::string& name,
     }
 }
 
+DesignClient::DesignClient(const std::string& name, const std::string& address,
+                           const double markupPercent)
+    : Client(name), address(address), markupPercent(markupPercent)
+{
+    if (address.empty() || markupPercent < 0)
+    {
+        throw std::invalid_argument("Неверные данные клиента проекта");
+    }
+}
+
 const std::string& DesignClient::getAddress() const { return address; }
 double DesignClient::getMarkupPercent() const { return markupPercent; }
 
