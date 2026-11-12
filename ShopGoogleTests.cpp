@@ -26,9 +26,9 @@ TEST(ProductTests, InvalidData)
 
 TEST(ProductTests, UniqueId)
 {
-    const Product product(10, "Стол", "Фабрика", 100, 5);
-    EXPECT_EQ(10, product.getId());
-    EXPECT_THROW(Product(10, "Стул", "Фабрика", 100, 5), std::invalid_argument);
+    const Product product(600, "Стол", "Фабрика", 100, 5);
+    EXPECT_EQ(600, product.getId());
+    EXPECT_THROW(Product(600, "Стул", "Фабрика", 100, 5), std::invalid_argument);
     const Product copy(product);
     EXPECT_EQ(product.getId(), copy.getId());
 }
@@ -53,47 +53,50 @@ TEST(ClientTests, Polymorphism)
 
 TEST(ClientTests, UniqueId)
 {
-    const RetailClient retail(1, "Иванов", "+7 900 111-22-33");
-    EXPECT_THROW(RetailClient(1, "Петров", "+7 900 444-55-66"),
+    const RetailClient retail(100, "Иванов", "+7 900 111-22-33");
+    EXPECT_THROW(RetailClient(100, "Петров", "+7 900 444-55-66"),
                  std::invalid_argument);
-    EXPECT_THROW(DesignClient(1, "Кухни", "ул. Мира, 5", 20),
+    EXPECT_THROW(DesignClient(100, "Кухни", "ул. Мира, 5", 20),
                  std::invalid_argument);
+    EXPECT_NE(retail.getId(), 0);
 }
 
 TEST(ClientTests, AutomaticId)
 {
     const RetailClient retail("Иванов", "+7 900 111-22-33");
     const DesignClient design("Кухни", "ул. Мира, 5", 20);
+    const RetailClient next("Петров", "+7 900 444-55-66");
     EXPECT_TRUE(retail.getId() > 0);
-    EXPECT_NE(retail.getId(), design.getId());
+    EXPECT_LT(retail.getId(), design.getId());
+    EXPECT_LT(design.getId(), next.getId());
 }
 
 TEST(ClientTests, InvalidData)
 {
-    EXPECT_THROW(RetailClient(1, "Иванов", ""), std::invalid_argument);
-    EXPECT_THROW(DesignClient(1, "Кухни", "", 20), std::invalid_argument);
-    EXPECT_THROW(DesignClient(1, "Кухни", "ул. Мира, 5", -5), std::invalid_argument);
+    EXPECT_THROW(RetailClient(300, "Иванов", ""), std::invalid_argument);
+    EXPECT_THROW(DesignClient(301, "Кухни", "", 20), std::invalid_argument);
+    EXPECT_THROW(DesignClient(302, "Кухни", "ул. Мира, 5", -5), std::invalid_argument);
 }
 
 TEST(SaleTests, UniqueId)
 {
-    const RetailClient buyer(1, "Иванов", "+7 900 111-22-33");
-    const Product product(1, "Стол", "Фабрика", 12000, 10);
-    const Sale sale(100, buyer, product, 1, "2026-10-05", 12000);
-    EXPECT_EQ(100, sale.getId());
-    EXPECT_THROW(Sale(100, buyer, product, 1, "2026-10-05", 12000),
+    const RetailClient buyer(200, "Иванов", "+7 900 111-22-33");
+    const Product product(201, "Стол", "Фабрика", 12000, 10);
+    const Sale sale(700, buyer, product, 1, "2026-10-05", 12000);
+    EXPECT_EQ(700, sale.getId());
+    EXPECT_THROW(Sale(700, buyer, product, 1, "2026-10-05", 12000),
                  std::invalid_argument);
 
-    const CustomOrder order(200, buyer, product, 1, "2026-10-06", 14400, 20);
-    EXPECT_EQ(200, order.getId());
-    EXPECT_THROW(CustomOrder(200, buyer, product, 1, "2026-10-06", 14400, 20),
+    const CustomOrder order(701, buyer, product, 1, "2026-10-06", 14400, 20);
+    EXPECT_EQ(701, order.getId());
+    EXPECT_THROW(CustomOrder(701, buyer, product, 1, "2026-10-06", 14400, 20),
                  std::invalid_argument);
 }
 
 TEST(SaleTests, AutomaticId)
 {
-    const RetailClient buyer(1, "Иванов", "+7 900 111-22-33");
-    const Product product(1, "Стол", "Фабрика", 12000, 10);
+    const RetailClient buyer(201, "Иванов", "+7 900 111-22-33");
+    const Product product(202, "Стол", "Фабрика", 12000, 10);
     const Sale first(buyer, product, 1, "2026-10-05", 12000);
     const Sale second(buyer, product, 2, "2026-10-06", 24000);
     const CustomOrder order(buyer, product, 1, "2026-10-07", 14400, 20);
@@ -106,64 +109,71 @@ class ShopTests : public ::testing::Test
 {
 protected:
     Shop shop{"Мебель"};
+    int tableId = 0;
+    int chairId = 0;
+    int wardrobeId = 0;
+    int buyerId = 0;
+    int secondBuyerId = 0;
+    int projectBuyerId = 0;
 
     void SetUp() override
     {
-        shop.addProduct(Product(1, "Стол", "Фабрика Стол", 12000, 10));
-        shop.addProduct(Product(2, "Стул", "Фабрика Стол", 3500, 40));
-        shop.addProduct(Product(3, "Шкаф", "Фабрика Мебель", 25000, 0));
-        shop.addRetailClient(RetailClient(1, "Иванов", "+7 900 111-22-33"));
-        shop.addRetailClient(RetailClient(2, "Петрова", "+7 900 444-55-66"));
-        shop.addDesignClient(DesignClient(3, "Кухни", "ул. Ленина, 10", 20));
+        tableId = shop.addProduct(Product("Стол", "Фабрика Стол", 12000, 10));
+        chairId = shop.addProduct(Product("Стул", "Фабрика Стол", 3500, 40));
+        wardrobeId = shop.addProduct(Product("Шкаф", "Фабрика Мебель", 25000, 0));
+        buyerId = shop.addRetailClient(
+            RetailClient("Иванов", "+7 900 111-22-33"));
+        secondBuyerId = shop.addRetailClient(
+            RetailClient("Петрова", "+7 900 444-55-66"));
+        projectBuyerId = shop.addDesignClient(
+            DesignClient("Кухни", "ул. Ленина, 10", 20));
     }
 };
 
 TEST_F(ShopTests, AvailableProducts)
 {
     EXPECT_EQ(2u, shop.getAvailableProducts().size());
-    shop.receiveProduct(3, 4);
+    shop.receiveProduct(wardrobeId, 4);
     EXPECT_EQ(3u, shop.getAvailableProducts().size());
-    EXPECT_EQ(4, shop.getProduct(3).getQuantity());
+    EXPECT_EQ(4, shop.getProduct(wardrobeId).getQuantity());
 }
 
-TEST_F(ShopTests, AutomaticClientIds)
+TEST_F(ShopTests, AutomaticIds)
 {
-    const RetailClient newRetail("Сидоров", "+7 900 777-88-99");
-    const DesignClient newDesign("Столы", "ул. Мира, 7", 10);
-    EXPECT_TRUE(newRetail.getId() > 0);
-    EXPECT_NE(newRetail.getId(), newDesign.getId());
-
-    EXPECT_EQ(newRetail.getId(), shop.addRetailClient(newRetail));
-    EXPECT_EQ(newDesign.getId(), shop.addDesignClient(newDesign));
-    EXPECT_EQ(newRetail.getId(),
-              shop.getRetailClient(newRetail.getId()).getId());
-    EXPECT_EQ(newDesign.getId(),
-              shop.getDesignClient(newDesign.getId()).getId());
+    EXPECT_TRUE(tableId > 0);
+    EXPECT_LT(tableId, chairId);
+    EXPECT_LT(chairId, wardrobeId);
+    EXPECT_LT(buyerId, secondBuyerId);
+    EXPECT_LT(secondBuyerId, projectBuyerId);
+    EXPECT_EQ(tableId, shop.getProduct(tableId).getId());
+    EXPECT_EQ(buyerId, shop.getRetailClient(buyerId).getId());
+    EXPECT_EQ(projectBuyerId, shop.getDesignClient(projectBuyerId).getId());
 }
 
 TEST_F(ShopTests, SaleDecreasesStock)
 {
-    shop.makeSale(1, 1, 2, "2026-10-05");
-    EXPECT_EQ(8, shop.getProduct(1).getQuantity());
+    shop.makeSale(buyerId, tableId, 2, "2026-10-05");
+    EXPECT_EQ(8, shop.getProduct(tableId).getQuantity());
     EXPECT_EQ(2, shop.getAllSales().at(0).getQuantity());
     EXPECT_DOUBLE_EQ(24000.0, shop.getAllSales().at(0).getTotal());
+    EXPECT_EQ(buyerId, shop.getAllSales().at(0).getClientId());
 }
 
 TEST_F(ShopTests, SoldQuantityForPeriod)
 {
-    shop.makeSale(1, 1, 2, "2026-10-05");
-    shop.makeSale(2, 1, 1, "2026-10-20");
-    shop.makeSale(1, 1, 1, "2026-11-02");
-    EXPECT_EQ(3, shop.getSoldQuantity(1, "2026-10-01", "2026-10-31"));
-    EXPECT_EQ(2, shop.getSoldQuantity(1, "2026-10-01", "2026-10-10"));
-    EXPECT_EQ(0, shop.getSoldQuantity(2, "2026-10-01", "2026-10-31"));
+    shop.makeSale(buyerId, tableId, 2, "2026-10-05");
+    shop.makeSale(secondBuyerId, tableId, 1, "2026-10-20");
+    shop.makeSale(buyerId, tableId, 1, "2026-11-02");
+    EXPECT_EQ(3, shop.getSoldQuantity(tableId, "2026-10-01", "2026-10-31"));
+    EXPECT_EQ(2, shop.getSoldQuantity(tableId, "2026-10-01", "2026-10-10"));
+    EXPECT_EQ(0, shop.getSoldQuantity(chairId, "2026-10-01", "2026-10-31"));
 }
 
 TEST_F(ShopTests, SalesBetweenDates)
 {
-    shop.makeSale(1, 1, 1, "2026-10-05");
-    shop.makeSale(2, 2, 1, "2026-10-10");
-    shop.makeSale(1, 2, 1, "2026-10-25");
+    shop.makeSale(buyerId, tableId, 1, "2026-10-05");
+    shop.makeSale(secondBuyerId, chairId, 1, "2026-10-10");
+    shop.makeSale(buyerId, chairId, 1, "2026-10-25");
     EXPECT_EQ(2u, shop.getSalesBetween("2026-10-05", "2026-10-10").size());
     EXPECT_EQ(3u, shop.getSalesBetween("2026-10-01", "2026-10-31").size());
     EXPECT_THROW(shop.getSalesBetween("2026-10-30", "2026-10-01"),
@@ -172,17 +182,19 @@ TEST_F(ShopTests, SalesBetweenDates)
 
 TEST_F(ShopTests, CustomOrderCostWithMarkup)
 {
-    EXPECT_DOUBLE_EQ(14400.0, shop.calculateOrderCost(1, 1, 20.0));
-    EXPECT_DOUBLE_EQ(24000.0, shop.calculateOrderCost(1, 2, 0.0));
-    EXPECT_THROW(shop.calculateOrderCost(1, 0, 20.0), std::invalid_argument);
-    EXPECT_THROW(shop.calculateOrderCost(1, 1, -1), std::invalid_argument);
+    EXPECT_DOUBLE_EQ(14400.0, shop.calculateOrderCost(tableId, 1, 20.0));
+    EXPECT_DOUBLE_EQ(24000.0, shop.calculateOrderCost(tableId, 2, 0.0));
+    EXPECT_THROW(shop.calculateOrderCost(tableId, 0, 20.0), std::invalid_argument);
+    EXPECT_THROW(shop.calculateOrderCost(tableId, 1, -1), std::invalid_argument);
 }
 
 TEST_F(ShopTests, CustomOrdersBetweenDates)
 {
-    EXPECT_DOUBLE_EQ(28800.0, shop.makeCustomOrder(3, 1, 2, "2026-10-10"));
-    EXPECT_DOUBLE_EQ(4200.0, shop.makeCustomOrder(3, 2, 1, "2026-10-12"));
-    shop.makeCustomOrder(3, 1, 1, "2026-11-01");
+    EXPECT_DOUBLE_EQ(28800.0,
+                     shop.makeCustomOrder(projectBuyerId, tableId, 2, "2026-10-10"));
+    EXPECT_DOUBLE_EQ(4200.0,
+                     shop.makeCustomOrder(projectBuyerId, chairId, 1, "2026-10-12"));
+    shop.makeCustomOrder(projectBuyerId, tableId, 1, "2026-11-01");
 
     const std::vector<CustomOrder> orders =
         shop.getOrdersBetween("2026-10-01", "2026-10-31");
@@ -195,20 +207,26 @@ TEST_F(ShopTests, CustomOrdersBetweenDates)
 
 TEST_F(ShopTests, NotEnoughStock)
 {
-    EXPECT_THROW(shop.makeSale(1, 1, 50, "2026-10-05"), std::runtime_error);
-    EXPECT_THROW(shop.makeSale(1, 3, 1, "2026-10-05"), std::runtime_error);
-    EXPECT_EQ(10, shop.getProduct(1).getQuantity());
+    EXPECT_THROW(shop.makeSale(buyerId, tableId, 50, "2026-10-05"),
+                 std::runtime_error);
+    EXPECT_THROW(shop.makeSale(buyerId, wardrobeId, 1, "2026-10-05"),
+                 std::runtime_error);
+    EXPECT_EQ(10, shop.getProduct(tableId).getQuantity());
     EXPECT_TRUE(shop.getAllSales().empty());
 }
 
 TEST_F(ShopTests, InvalidDateAndDuplicateIds)
 {
-    EXPECT_THROW(shop.makeSale(1, 1, 1, "2026-02-29"), std::invalid_argument);
-    EXPECT_THROW(shop.makeSale(1, 1, 1, "05.10.2026"), std::invalid_argument);
-    EXPECT_THROW(shop.addProduct(Product(1, "Иной", "Фабрика", 1, 1)),
+    EXPECT_THROW(shop.makeSale(buyerId, tableId, 1, "2026-02-29"),
                  std::invalid_argument);
-    EXPECT_THROW(shop.addRetailClient(RetailClient(1, "Другой", "+7 900 000-00-00")),
+    EXPECT_THROW(shop.makeSale(buyerId, tableId, 1, "05.10.2026"),
                  std::invalid_argument);
-    EXPECT_THROW(shop.getRetailClient(99), std::invalid_argument);
-    EXPECT_THROW(shop.getDesignClient(99), std::invalid_argument);
+    EXPECT_THROW(shop.addProduct(Product(tableId, "Иной", "Фабрика", 1, 1)),
+                 std::invalid_argument);
+    EXPECT_THROW(shop.addRetailClient(
+                     RetailClient(buyerId, "Другой", "+7 900 000-00-00")),
+                 std::invalid_argument);
+    EXPECT_THROW(shop.getRetailClient(990), std::invalid_argument);
+    EXPECT_THROW(shop.getDesignClient(991), std::invalid_argument);
+    EXPECT_THROW(shop.getProduct(992), std::invalid_argument);
 }
