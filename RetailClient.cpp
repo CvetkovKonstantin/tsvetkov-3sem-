@@ -12,6 +12,15 @@ RetailClient::RetailClient(const int id, const std::string& name,
     }
 }
 
+RetailClient::RetailClient(const std::string& name, const std::string& phone)
+    : Client(name), phone(phone)
+{
+    if (phone.empty())
+    {
+        throw std::invalid_argument("Телефон покупателя не указан");
+    }
+}
+
 const std::string& RetailClient::getPhone() const { return phone; }
 
 std::string RetailClient::getInfo() const
