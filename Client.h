@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 /**
  * @brief Базовый класс клиента мебельного магазина
@@ -13,6 +14,14 @@ private:
      */
     int id;
     /**
+     * @brief Следующий свободный идентификатор
+     */
+    static int nextId;
+    /**
+     * @brief Идентификаторы уже существующих клиентов
+     */
+    static std::vector<int> activeIds;
+    /**
      * @brief Название клиента
      */
     std::string name;
@@ -20,10 +29,26 @@ private:
 public:
     /**
      * @brief Создать клиента
-     * @param id Положительный идентификатор клиента
+     * @param id Положительный уникальный идентификатор клиента
      * @param name Непустое название клиента
      */
     Client(const int id, const std::string& name);
+    /**
+     * @brief Создать клиента с автоматическим идентификатором
+     * @param name Непустое название клиента
+     */
+    Client(const std::string& name);
+    /**
+     * @brief Скопировать клиента с сохранением идентификатора
+     * @param other Исходный клиент
+     */
+    Client(const Client& other);
+    /**
+     * @brief Присвоить данные клиента с сохранением идентификатора
+     * @param other Исходный клиент
+     * @return Ссылка на текущего клиента
+     */
+    Client& operator=(const Client& other);
     /**
      * @brief Уничтожить экземпляр клиента
      */
