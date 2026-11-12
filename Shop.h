@@ -73,8 +73,9 @@ public:
     /**
      * @brief Добавить образец мебели в ассортимент
      * @param product Образец мебели
+     * @return Идентификатор добавленного образца
      */
-    void addProduct(const Product& product);
+    int addProduct(const Product& product);
     /**
      * @brief Зарегистрировать розничного покупателя или найти существующего
      * @param client Розничный покупатель
