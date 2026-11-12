@@ -34,44 +34,6 @@ Product::Product(const std::string& name, const std::string& manufacturer,
 {
 }
 
-Product::Product(const Product& other)
-    : id(other.id), name(other.name), manufacturer(other.manufacturer),
-      price(other.price), quantity(other.quantity)
-{
-    activeIds.push_back(id);
-}
-
-Product& Product::operator=(const Product& other)
-{
-    if (this != &other)
-    {
-        name = other.name;
-        manufacturer = other.manufacturer;
-        price = other.price;
-        quantity = other.quantity;
-        if (id != other.id)
-        {
-            activeIds.push_back(other.id);
-            const auto it = std::find(activeIds.begin(), activeIds.end(), id);
-            if (it != activeIds.end())
-            {
-                activeIds.erase(it);
-            }
-            id = other.id;
-        }
-    }
-    return *this;
-}
-
-Product::~Product()
-{
-    const auto it = std::find(activeIds.begin(), activeIds.end(), id);
-    if (it != activeIds.end())
-    {
-        activeIds.erase(it);
-    }
-}
-
 int Product::getId() const { return id; }
 const std::string& Product::getName() const { return name; }
 const std::string& Product::getManufacturer() const { return manufacturer; }
